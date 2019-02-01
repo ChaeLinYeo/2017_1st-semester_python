@@ -1,0 +1,38 @@
+class BankAccount:
+	__no_of_accounts = 0
+	def __init__(self, name, balance=0):
+		self.__name = name
+		self.__balance = balance
+		if balance < 0:
+			balance = 0
+		BankAccount.__no_of_accounts += 1
+		print("A bank account for " + name + " is open.")
+		print("Your current balance is " + str(balance) + " won.")
+
+	def __str__(self):
+		return self.__name + "'s BankAccount object"
+
+	def show_balance(self):
+		print(self.__name + "'s balance is" + str(self.__balance) + " won.")
+
+	def deposit(self, amount):
+		if amount>=0:
+			self.__balance += amount
+			print(str(amount) + " won has been successfully deposited.")
+			print(self.__name + "'s balance is " + str(self.__balance) + " won.")
+		else:
+			print("Deposit failed.")
+			print(self.__name + "'s balance is " + str(self.__balance) + " won.")
+
+	def withdraw(self, amount):
+		if amount >=0 and self.__balance-amount >= 0:
+			self.__balance -= amount
+			print(str(amount) + " won has been successfully withdrawn.")
+			print(self.__name + "'s balance is " + str(self.__balance) + " won.")
+		else:
+			print("Withdraw failed.")
+			print(self.__name + "'s balance is " + str(self.__balance) + " won.")
+
+	@staticmethod 
+	def count_accounts():
+		return BankAccount.__no_of_accounts
