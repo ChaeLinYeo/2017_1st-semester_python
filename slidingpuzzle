@@ -1,0 +1,102 @@
+
+def create_init_board(size):
+	import random
+	s=[]
+	ss=[]
+	num=0
+	snum=0
+	while 0<=num<=(size**2)-1:
+		s.append(num)
+		num+=1
+	random.shuffle(s)
+	for i in range(size):
+		ss.append([])
+		for k in range(size):
+			ss[i].append(s[snum])
+			snum+=1
+	return ss
+
+
+def set_goal_board(size):
+	s=[]
+	num=1
+	ss=[]
+	snum=0
+	while 1<=num<=(size**2):
+		if num==size**2:
+			s.append(0)
+		else:
+			s.append(num)
+		num+=1
+	for i in range(size):
+		ss.append([])
+		for k in range(size):
+			ss[i].append(s[snum])
+			snum+=1
+	return ss
+
+def print_board(board):
+	for row in board:
+		for num in row:
+			if num == 0:
+				print("  ",end=' ')
+			else:
+				print(str(num).rjust(2),end=' ')
+		print()
+
+def get_number(size):
+	num = input("Type the number you want to move (Type 0 to quit): ")
+	while not(num.isdigit() and 0<=int(num)<=(size**2)-1):
+		num = input("Type the number you want to move (Type 0 to quit): ")
+	return int(num)
+
+
+def find_position(num,board):
+	for i in range(int(size)):
+		for j in range(int(size)):
+			if num == board[i][j]:
+				return (i,j)
+
+def move(pos,empty,board):
+	(x,y) = pos
+	if empty == (x-1,y) or empty == (x+1,y) or empty==(x,y-1) or empty == (x,y+1):
+		board[empty[0]][empty[1]] = board[x][y]
+		board[x][y] = 0
+		return (pos,board)
+	else:
+		print('Can\'t move! Try again.')
+		return (empty,board)
+
+
+
+
+
+
+
+def sliding_puzzle(size):
+	board = create_init_board(size)
+	goal = set_goal_board(size)
+	empty = find_position(0,board)
+	while True:
+		print_board(board) #중첩 리스츠트로 표현된 퍼즐 보드를 인수로 받아 실행창에 보드를 프린트
+		if board == goal:
+			print("Congrtulations!")
+			break
+		num = get_number(size) # 실행창에서 메세지를 보여주며 사용자에게서 0부터 15사이의 입력을 받아서 정수로 바꿔내주는 함수 
+		if num == 0:
+			break
+		pos = find_position(num,board) # num과 board를 인수로 받아 num의 위치좌표를 가르쳐줌
+		(empty,board) = move(pos,empty,board) #이동할 번호의 위치좌표 pos 와 빈칸의 좌표 empty,board를 인수로 받아 pos가 empty의 이웃에 있는질 확인, 바뀐 empty,board 넣어줌 
+	print("Please come again.")
+
+
+
+
+if __name__ == "__main__":
+	import sys
+	size = sys.argv[1]
+	if size.isdigit() and int(size) >1:
+		sliding_puzzle(int(size))
+	else:
+		print("Not a proper system argument. ")
+
