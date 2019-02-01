@@ -1,0 +1,14 @@
+print("날짜를 분으로 환산해드립니다.")
+
+    days = input('며칠? ')
+    while not days.isdigit() :
+        print("숫자가 아닌 문자가 들어있습니다.")
+        input("며칠? ")
+    days = int(days)
+    print(days, "일은", days*24*60, "분입니다.")
+    cont = input("계속하시겠습니까? (예/아니오)")
+    while not (cont == '예' or cont == '아니오'):
+        cont = input("계속하시겠습니까? (예/아니오)")
+    if (cont == '아니오'):
+        break
+print("이용해주셔서 감사합니다.")
