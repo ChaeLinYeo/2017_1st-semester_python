@@ -1,0 +1,136 @@
+from tkinter import *
+
+class Box:
+    def __init__(self, size):
+        self.size = size
+        
+    def in_horizontal_contact(self, x):#가로벽에 부딛혔는가
+        return x <= 0 or x >= self.size
+        
+    def in_vertical_contact(self, y):#세로벽에 부딛혔는가
+        return y <= 0 or y >= self.size
+
+        
+class MovingBall:
+    def __init__(self, x, y, xv, yv, color, size, box, stake):
+        self.x = x
+        self.y = y
+        self.xv = xv
+        self.yv = yv
+        self.color = color
+        self.size = size
+        self.box = box
+        self.stake = stake
+    
+    def plusball(self, ball):
+        self.ball = ball
+
+
+    def move(self, time_unit):#얘 수정하기
+        old_x = self.x
+        self.x = self.x + self.xv * time_unit
+        if self.box.in_horizontal_contact(self.x):#수평선에 부딛혔는가
+            self.xv = - self.xv
+
+        old_y = self.y
+        self.y = self.y + self.yv * time_unit
+        if self.box.in_vertical_contact(self.y):#수직선에 부딛혔는가
+            self.yv = - self.yv         
+        
+        if self.stake.ball_horizontal_contact(self.x) and self.stake.ball_vertical_contact(self.y):
+            if self.stake.ball_horizontal_contact(old_x):
+                self.yv = - self.yv
+            if self.stake.ball_vertical_contact(old_y):
+                self.xv = - self.xv
+
+        x0 = self.x
+        y0 = self.y
+        x1 = x0 + self.size *2
+        y1 = y0 + self.size *2
+        x2 = self.ball.x
+        y2 = self.ball.y
+        x3 = x2 + self.size *2
+        y3 = y2 + self.size *2
+        if (x0 <= x2 <= x1 or x0 <= x3 <= x1) and (y0 <= y2 <= y1 or y0 <= y3 <= y1):
+            self.xv, self.yv = -self.xv, -self.yv
+
+
+
+
+class AnimationWriter:#그림그리는역할
+    def __init__(self, root, ball, box, stake, ball1):
+        self.size = box.size
+        self.canvas = Canvas(root, width=self.size, height=self.size)
+        self.canvas.grid()
+        self.ball = ball
+        self.stake = stake
+        self.ball1 = ball1
+            
+    def animate(self):
+        self.canvas.delete(ALL)
+        self.ball.move(1)
+        x = self.ball.x
+        y = self.ball.y
+        d = self.ball.size * 2
+        c = self.ball.color
+
+        self.ball1.move(1)
+        x_1 = self.ball1.x
+        y_1 = self.ball1.y
+        d_1 = self.ball1.size * 2
+        c_1 = self.ball1.color
+
+        s_c = self.stake.color
+        x0 = (self.size - self.stake.size)//2
+        y0 = (self.size - self.stake.size)//2
+        x1 = (self.size + self.stake.size)//2
+        y1 = (self.size + self.stake.size)//2
+
+        self.canvas.create_oval(x, y, x+d , y+d, outline=c, fill=c)
+        self.canvas.create_oval(x_1, y_1, x_1+d_1, y_1+d_1, outline=c_1, fill=c_1)
+        self.canvas.create_rectangle(x0, y0, x1, y1, outline = s_c, fill = s_c)
+        self.canvas.after(10, self.animate)
+
+
+class Stake:
+    def __init__(self, size, color, box_size):
+        self.size = size
+        self.color = color
+        self.box_size = box_size
+
+    def ball_horizontal_contact(self, ball_x):
+        x0 = (self.box_size - self.size)//2
+        x1 = (self.box_size + self.size)//2
+        return x0 <= ball_x <= x1
+
+    def ball_vertical_contact(self, ball_y):
+        y0 = (self.box_size - self.size)//2
+        y1 = (self.box_size + self.size)//2
+        return y0 <= ball_y <= y1
+
+
+class BounceController:
+    def __init__(self):
+        box_size = 400
+        ball_size = 10
+        stake_size = ball_size * 4
+        ball_color = 'red'
+        stake_color = 'blue'
+        ball1_color = 'green'
+        ball1_size = 10
+        x_velocity, y_velocity = 5, 2
+        root = Tk()
+        root.title("Bouncing Ball")
+        root.geometry(str(box_size+10)+"x"+str(box_size+10))
+        box = Box(box_size)
+        stake = Stake(stake_size, stake_color, box_size)
+        ball = MovingBall(box_size//3, box_size//5, x_velocity, y_velocity, ball_color, ball_size, box, stake)
+        ball1 = MovingBall(box_size//5, box_size//3, x_velocity, y_velocity, ball1_color, ball1_size, box, stake)
+        ball.plusball(ball1)
+        ball1.plusball(ball)
+        AnimationWriter(root, ball, box, stake, ball1).animate()#애니메이션라이터에 넣어주기
+        root.mainloop()
+    
+BounceController()
+
+
