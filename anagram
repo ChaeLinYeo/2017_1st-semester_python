@@ -1,0 +1,35 @@
+
+def anagram():
+	s= eval(input())
+	s_1 = s[0:]
+	p=0
+	while p <= len(s)-1:
+		s_1[p]= list(str(s_1[p]))
+		p +=1
+	for i in range(len(s)):	
+		s_1[i].sort()
+
+
+	s_2=s_1[0:]
+	i =0
+	while i <= len(s)-1:
+		s_2[i]= str(s_1[i][0]+s_1[i][1]+s_1[i][2]+s_1[i][3]) + "."+str(1)+ str(i)
+		i +=1
+	s_2.sort()
+
+
+	result=''
+	q=0
+	while q <= len(s)-2:
+		if s_2[q][:4]==s_2[q+1][:4]:
+			result += str(s[int(s_2[q][6:])]) + str(" ")
+			if s_2[q+1][:4] != s_2[q+2][:4]:
+				result += str(s[int(s_2[q+1][6:])]) + str("\n")
+		q +=1
+
+	return result
+
+print(anagram())
+
+
+#['0952', '5239', '1270', '8581', '7458', '3414', '7906', '2356', '4360', '3491', '6232', '5927', '2735', '2509','5849', '8457', '9340', '1858', '8602', '5784']
